@@ -10,6 +10,9 @@ public class CountriesDto {
         this.name = name;
         this.population = population;
     }
+    public CountriesDto(){
+
+    }
 
     public Integer getId() {
         return id;
