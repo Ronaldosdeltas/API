@@ -1,8 +1,7 @@
 package com.APIProject.API.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.APIProject.API.dto.CountriesDto;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +10,24 @@ import java.util.List;
 @RequestMapping("/country")
 public class FirstApiproject1 {
 
-    private List<String> countries = new ArrayList<>();
+    private List<CountriesDto> countries = new ArrayList<>();
 
     //CREATE - POST
+    @PostMapping
+    public CountriesDto save(@RequestBody final CountriesDto countriesDto){
+        countries.add(countriesDto);
+        return countriesDto;
+    }
+
     //READ - GET
     // read all
 
     @GetMapping
-    public List<String> getall(){
+    public List<CountriesDto> getall(){
+        var country = new CountriesDto(1,"Brazil",100_000_00L);
+        countries.clear();
+        countries.add(country);
+
         return countries;
     }
 
