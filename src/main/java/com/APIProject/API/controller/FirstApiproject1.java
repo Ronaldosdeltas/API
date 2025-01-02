@@ -32,6 +32,14 @@ public class FirstApiproject1 {
     }
 
     //read specific
+    public CountriesDto findById(@PathVariable("id") final long id){
+        for(var country: countries){
+            if (country.getId() == id){
+                return country;
+            }
+        }
+        return null;
+    }
     //filterin
     //UPDATE -PUT/PATCH
     //DELETE-DELETE
