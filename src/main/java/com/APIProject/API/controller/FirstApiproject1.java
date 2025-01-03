@@ -1,6 +1,8 @@
 package com.APIProject.API.controller;
 
 import com.APIProject.API.dto.CountriesDto;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -14,31 +16,31 @@ public class FirstApiproject1 {
 
     //CREATE - POST
     @PostMapping
-    public CountriesDto save(@RequestBody final CountriesDto countriesDto){
+    public ResponseEntity<CountriesDto> save(@RequestBody final CountriesDto countriesDto){
         countries.add(countriesDto);
-        return countriesDto;
+        return ResponseEntity.status(HttpStatus.CREATED).body(countriesDto);
     }
 
     //READ - GET
     // read all
 
     @GetMapping
-    public List<CountriesDto> getall(){
-        var country = new CountriesDto(1,"Brazil",100_000_00L);
-        countries.clear();
+    public ResponseEntity<List<CountriesDto>> getAll(){
+        var country = new CountriesDto(1,"Brazil",100_000_000L);
         countries.add(country);
 
-        return countries;
+        return ResponseEntity.ok(countries);
     }
 
     //read specific
-    public CountriesDto findById(@PathVariable("id") final long id){
+    @GetMapping("/{id}")
+    public ResponseEntity<CountriesDto> findById(@PathVariable("id") final long id){
         for(var country: countries){
             if (country.getId() == id){
-                return country;
+                return ResponseEntity.ok(country);
             }
         }
-        return null;
+        return ResponseEntity.notFound().build();
     }
     //filterin
     //UPDATE -PUT/PATCH
