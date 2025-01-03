@@ -7,12 +7,26 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/country")
 public class FirstApiproject1 {
 
-    private List<CountriesDto> countries = new ArrayList<>();
+    private List<CountriesDto> countries = insertCountries();
+
+    private List<CountriesDto>  insertCountries(){
+        var listofCountries = new ArrayList<CountriesDto>();
+        listofCountries.add(new CountriesDto(1,"Brazil",100_000_000l));
+        listofCountries.add(new CountriesDto(7,"Canada",100_000_000l));
+        listofCountries.add(new CountriesDto(4,"Russia",100_000_000l));
+        listofCountries.add(new CountriesDto(5,"Japan",100_000_000l));
+        listofCountries.add(new CountriesDto(2,"Usa",100_000_000l));
+        return listofCountries;
+
+    }
+
 
     //CREATE - POST
     @PostMapping
@@ -24,7 +38,7 @@ public class FirstApiproject1 {
     //READ - GET
     // read all
 
-    @GetMapping
+    //@GetMapping
     public ResponseEntity<List<CountriesDto>> getAll(){
         var country = new CountriesDto(1,"Brazil",100_000_000L);
         countries.add(country);
@@ -43,6 +57,23 @@ public class FirstApiproject1 {
         return ResponseEntity.notFound().build();
     }
     //filterin
+    @GetMapping
+public ResponseEntity<List<CountriesDto>> getAll(
+        @RequestParam(name = "prefix",required = false) final String prefix){
+        if(Objects.isNull(prefix)){
+            return ResponseEntity.ok(countries);
+        }
+        else{
+            var listofCountries =
+                    countries.stream()
+                            .filter(countriesDto -> countriesDto.getName().startsWith(prefix))
+                            .collect(Collectors.toList());
+            return ResponseEntity.ok(listofCountries);
+
+        }
+
+
+}
     //UPDATE -PUT/PATCH
     //DELETE-DELETE
 
