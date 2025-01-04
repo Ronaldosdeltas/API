@@ -1,16 +1,16 @@
 package com.APIProject.API.dto;
 
-public class CountriesDto {
+public class CountriesResponse {
     private Integer id;
     private String name;
     private Long population;
 
-    public CountriesDto(Integer id, String name, Long population) {
+    public CountriesResponse(Integer id, String name, Long population) {
         this.id = id;
         this.name = name;
         this.population = population;
     }
-    public CountriesDto(){
+    public CountriesResponse(){
 
     }
 

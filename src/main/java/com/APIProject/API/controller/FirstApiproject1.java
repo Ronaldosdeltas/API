@@ -1,6 +1,7 @@
 package com.APIProject.API.controller;
 
-import com.APIProject.API.dto.CountriesDto;
+import com.APIProject.API.dto.CountriesRequest;
+import com.APIProject.API.dto.CountriesResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,15 +15,15 @@ import java.util.stream.Collectors;
 @RequestMapping("/country")
 public class FirstApiproject1 {
 
-    private List<CountriesDto> countries = insertCountries();
+    private List<CountriesResponse> countries = insertCountries();
 
-    private List<CountriesDto>  insertCountries(){
-        var listofCountries = new ArrayList<CountriesDto>();
-        listofCountries.add(new CountriesDto(1,"Brazil",100_000_000l));
-        listofCountries.add(new CountriesDto(7,"Canada",100_000_000l));
-        listofCountries.add(new CountriesDto(4,"Russia",100_000_000l));
-        listofCountries.add(new CountriesDto(5,"Japan",100_000_000l));
-        listofCountries.add(new CountriesDto(2,"Usa",100_000_000l));
+    private List<CountriesResponse>  insertCountries(){
+        var listofCountries = new ArrayList<CountriesResponse>();
+        listofCountries.add(new CountriesResponse(1,"Brazil",100_000_000l));
+        listofCountries.add(new CountriesResponse(7,"Canada",100_000_000l));
+        listofCountries.add(new CountriesResponse(4,"Russia",100_000_000l));
+        listofCountries.add(new CountriesResponse(5,"Japan",100_000_000l));
+        listofCountries.add(new CountriesResponse(2,"Usa",100_000_000l));
         return listofCountries;
 
     }
@@ -30,17 +31,19 @@ public class FirstApiproject1 {
 
     //CREATE - POST
     @PostMapping
-    public ResponseEntity<CountriesDto> save(@RequestBody final CountriesDto countriesDto){
-        countries.add(countriesDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(countriesDto);
+    public ResponseEntity<CountriesResponse> save(@RequestBody final CountriesRequest request){
+        Integer id = countries.size();
+        var response = new CountriesResponse(id, request.getName(), request.getPopulation());
+        countries.add(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     //READ - GET
     // read all
 
     //@GetMapping
-    public ResponseEntity<List<CountriesDto>> getAll(){
-        var country = new CountriesDto(1,"Brazil",100_000_000L);
+    public ResponseEntity<List<CountriesResponse>> getAll(){
+        var country = new CountriesResponse(1,"Brazil",100_000_000L);
         countries.add(country);
 
         return ResponseEntity.ok(countries);
@@ -48,7 +51,7 @@ public class FirstApiproject1 {
 
     //read specific
     @GetMapping("/{id}")
-    public ResponseEntity<CountriesDto> findById(@PathVariable("id") final long id){
+    public ResponseEntity<CountriesResponse> findById(@PathVariable("id") final long id){
         for(var country: countries){
             if (country.getId() == id){
                 return ResponseEntity.ok(country);
@@ -58,7 +61,7 @@ public class FirstApiproject1 {
     }
     //filterin
     @GetMapping
-public ResponseEntity<List<CountriesDto>> getAll(
+public ResponseEntity<List<CountriesResponse>> getAll(
         @RequestParam(name = "prefix",required = false) final String prefix){
         if(Objects.isNull(prefix)){
             return ResponseEntity.ok(countries);
@@ -75,8 +78,42 @@ public ResponseEntity<List<CountriesDto>> getAll(
 
 }
     //UPDATE -PUT/PATCH
-    //DELETE-DELETE
+    @PutMapping("/{id}")
+    public ResponseEntity<CountriesResponse> update(@PathVariable("id") final int id, @RequestBody final CountriesRequest request){
 
+        CountriesResponse countriesDto = null;
+        for(var country: countries){
+            if (country.getId() == id){
+                countriesDto = country;
+
+            }
+        }
+        if(Objects.nonNull(countriesDto)){
+            countriesDto.setName(request.getName());
+            countriesDto.setPopulation(request.getPopulation());
+            return ResponseEntity.ok(countriesDto);
+        }
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+    }
+    //DELETE-DELETE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable final int id){
+
+        //Find
+        int index = -1;
+        for(int i = 0; i<countries.size(); ++i){
+            if(countries.get(i).getId() ==id){
+                index =i;
+                break;
+            }
+        }
+        //remove
+        if(index >= 0){
+            countries.remove(index);
+        }
+        return ResponseEntity.noContent().build();
+
+    }
     @GetMapping("/FirstAPI1")
     public String firstAPI(){
         return "FirstAPI";
